@@ -19,7 +19,7 @@
  *   Open index.html directly — DB will be undefined; orders succeed but are not stored.
  */
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Helpers ─────────────────────────────────────────────────────────────
 
 function json(data, status = 200) {
   return Response.json(data, {
@@ -114,8 +114,8 @@ export async function onRequestPost(context) {
       await context.env.DB.prepare(`
         INSERT INTO orders
           (id, created_at, status,
-           name, email, phone,
-           address, city, state, zip, country,
+           customer_name, customer_email, customer_phone,
+           shipping_address, shipping_city, shipping_state, shipping_zip, shipping_country,
            shipping_method, shipping_cost,
            subtotal, total, items)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
