@@ -1,0 +1,35 @@
+# VELORA — Cloudflare Pages configuration
+#
+# Local development:
+#   npx wrangler pages dev . --port 8788
+#   Then open http://localhost:8788
+#
+# Deploy via GitHub:
+#   Push to your repo → Cloudflare Pages picks it up automatically.
+#   No manual wrangler deploy needed for Pages.
+
+name                  = "velora-store"
+compatibility_date    = "2024-11-01"
+pages_build_output_dir = "."
+
+# ── D1 — Order storage (Stage 9) ─────────────────────────────────────────────
+# Setup steps (one-time):
+#   1. Create the database:
+#        npx wrangler d1 create velora-orders
+#   2. Paste the database_id printed by that command into the field below.
+#   3. Apply the schema to the remote DB:
+#        npx wrangler d1 execute velora-orders --file=schema.sql --remote
+#   4. Add the binding in Cloudflare Pages dashboard:
+#        Settings → Functions → D1 database bindings
+#        Variable name: DB   |   Database: velora-orders
+#   5. Local dev (D1 included):
+#        npx wrangler pages dev . --port 8788
+
+[[d1_databases]]
+binding       = "DB"               # must match context.env.DB in orders.js
+database_name = "velora-orders"
+database_id   = "61e85aa7-45fa-461f-b916-ff0a1daf23f5"
+
+# ── Stage 10: Email (Resend or MailChannels) ─────────────────────────────────
+# [vars]
+# RESEND_API_KEY = ""   # set in Pages → Settings → Environment variables
