@@ -30,6 +30,17 @@ binding       = "DB"               # must match context.env.DB in orders.js
 database_name = "velora-orders"
 database_id   = "61e85aa7-45fa-461f-b916-ff0a1daf23f5"
 
+# ── Razorpay — Payment integration ────────────────────────────────────────────
+# Set BOTH in Cloudflare Pages → Settings → Environment variables (not here).
+# Never commit secrets to this file or to GitHub.
+#
+#   RAZORPAY_KEY_ID      = rzp_test_xxxxxxxxxxxx   (public — safe in test mode)
+#   RAZORPAY_KEY_SECRET  = (secret — dashboard only, never in code)
+#
+# Test card (Razorpay test mode):
+#   Card: 4111 1111 1111 1111  |  Expiry: any future  |  CVV: any 3 digits
+#   UPI:  success@razorpay
+
 # ── Stage 10: Email (Resend or MailChannels) ─────────────────────────────────
 # [vars]
 # RESEND_API_KEY = ""   # set in Pages → Settings → Environment variables

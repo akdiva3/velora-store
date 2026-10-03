@@ -502,6 +502,9 @@
       .hero-h1{font-size:clamp(2.3rem,9.5vw,2.85rem);}
     }
   </style>
+  <!-- Razorpay checkout — loaded for production Cloudflare Pages deployment -->
+  <!-- Blocked by artifact CSP in preview; works correctly on your deployed domain -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
@@ -632,15 +635,15 @@
         </div>
         <p class="feat-desc">Three-driver hybrid sound. Spatial audio adapts to your head movement in real time. Eight hours per charge, twenty-four more in the case — and IPX5 rated for every commute.</p>
         <div class="feat-pr">
-          <span class="feat-pr-now">$79</span>
-          <span class="feat-pr-old">$129</span>
+          <span class="feat-pr-now">₹79</span>
+          <span class="feat-pr-old">₹129</span>
           <span class="feat-pr-disc">39% off</span>
         </div>
         <div class="feat-acts">
           <a href="#" class="btn-gold">ADD TO CART</a>
           <a href="#" class="btn-dark">BUY NOW</a>
         </div>
-        <p class="feat-meta">Free shipping on orders over $50&nbsp;&nbsp;·&nbsp;&nbsp;30-day returns<br>Secure checkout via SSL</p>
+        <p class="feat-meta">Free shipping on orders over ₹50&nbsp;&nbsp;·&nbsp;&nbsp;30-day returns<br>Secure checkout via SSL</p>
       </div>
     </div>
   </div>
@@ -1018,7 +1021,7 @@ function renderCartDrawer(){
       </div>
       <div class="ci-info">
         <div class="ci-name">${p.name}</div>
-        <div class="ci-price">$${(p.price*item.qty).toFixed(2)} <span style="font-size:.72rem;color:var(--text3);font-weight:300">($${p.price} ea)</span></div>
+        <div class="ci-price">₹${(p.price*item.qty).toFixed(2)} <span style="font-size:.72rem;color:var(--text3);font-weight:300">(₹${p.price} ea)</span></div>
         <div class="ci-row">
           <div class="ci-qty">
             <button class="ciq-btn" onclick="cartQty('${p.id}',-1)">−</button>
@@ -1031,7 +1034,7 @@ function renderCartDrawer(){
     </div>`;
   }).join('');
   ft.innerHTML=`
-    <div class="cart-sub-row"><span class="cart-sub-label">SUBTOTAL (${total} item${total!==1?'s':''})</span><span class="cart-sub-val">$${subtotal.toFixed(2)}</span></div>
+    <div class="cart-sub-row"><span class="cart-sub-label">SUBTOTAL (${total} item${total!==1?'s':''})</span><span class="cart-sub-val">₹${subtotal.toFixed(2)}</span></div>
     <p class="cart-note">Shipping and taxes calculated at checkout.</p>
     <button class="cart-checkout" onclick="goToCheckout()">PROCEED TO CHECKOUT</button>
     <button class="cart-continue" onclick="closeCart()">CONTINUE SHOPPING</button>`;
@@ -1103,8 +1106,8 @@ function renderCheckoutPage(){
       <div class="ck-sum-vis" style="background:${p.gradient}">
         ${prodImgSlot(p,18)}
       </div>
-      <div class="ck-sum-info"><div class="ck-sum-name">${p.name}</div><div class="ck-sum-sub">Qty: ${item.qty} · $${p.price} each</div></div>
-      <div class="ck-sum-price">$${(p.price*item.qty).toFixed(2)}</div>
+      <div class="ck-sum-info"><div class="ck-sum-name">${p.name}</div><div class="ck-sum-sub">Qty: ${item.qty} · ₹${p.price} each</div></div>
+      <div class="ck-sum-price">₹${(p.price*item.qty).toFixed(2)}</div>
     </div>`;
   }).join('');
 
@@ -1182,7 +1185,7 @@ function renderCheckoutPage(){
         <div class="ck-ship-opt" id="ship-exp" onclick="selectShipping('exp')">
           <div class="ck-ship-radio"><div class="ck-ship-dot"></div></div>
           <div style="flex:1"><div class="ck-ship-name">Express Shipping</div><div class="ck-ship-detail">2–3 business days</div></div>
-          <div class="ck-ship-price">$9.99</div>
+          <div class="ck-ship-price">₹9.99</div>
         </div>
       </div>
       <button class="ck-place-btn" id="ck-place-btn" onclick="placeOrder()">PLACE ORDER</button>
@@ -1191,10 +1194,10 @@ function renderCheckoutPage(){
       <div class="ck-sum-title">ORDER SUMMARY</div>
       ${itemsHTML}
       <hr class="ck-divider">
-      <div class="ck-row-total"><span class="ck-tot-label">Subtotal</span><span class="ck-tot-val">$${subtotal.toFixed(2)}</span></div>
+      <div class="ck-row-total"><span class="ck-tot-label">Subtotal</span><span class="ck-tot-val">₹${subtotal.toFixed(2)}</span></div>
       <div class="ck-row-total" id="ck-ship-display"><span class="ck-tot-label">Shipping</span><span class="ck-tot-val">Free</span></div>
       <hr class="ck-divider">
-      <div class="ck-row-total"><span class="ck-grand-label">TOTAL</span><span class="ck-grand-val" id="ck-grand">$${subtotal.toFixed(2)}</span></div>
+      <div class="ck-row-total"><span class="ck-grand-label">TOTAL</span><span class="ck-grand-val" id="ck-grand">₹${subtotal.toFixed(2)}</span></div>
       <p style="font-size:.65rem;color:var(--text3);margin-top:1rem;line-height:1.6">Payment processing not yet connected. Place Order simulates confirmation only.</p>
     </div>
   </div>
@@ -1209,12 +1212,13 @@ function selectShipping(type){
   const subtotal=CART.reduce((s,i)=>{const p=PRODUCTS.find(x=>x.id===i.id);return s+(p?p.price*i.qty:0);},0);
   const cost=type==='exp'?9.99:0;
   const shipEl=document.getElementById('ck-ship-display');
-  if(shipEl) shipEl.querySelector('.ck-tot-val').textContent=cost?`$${cost.toFixed(2)}`:'Free';
+  if(shipEl) shipEl.querySelector('.ck-tot-val').textContent=cost?`₹${cost.toFixed(2)}`:'Free';
   const grandEl=document.getElementById('ck-grand');
-  if(grandEl) grandEl.textContent=`$${(subtotal+cost).toFixed(2)}`;
+  if(grandEl) grandEl.textContent=`₹${(subtotal+cost).toFixed(2)}`;
 }
 
 async function placeOrder(){
+  // ── Validate ────────────────────────────────────────────────────────────────
   let valid=true;
   CK_RULES.forEach(r=>{ if(!ckValidateField(r)) valid=false; });
   if(!valid){
@@ -1222,43 +1226,128 @@ async function placeOrder(){
     if(first) first.scrollIntoView({behavior:'smooth',block:'center'});
     return;
   }
+
   const btn=document.getElementById('ck-place-btn');
-  if(btn){btn.disabled=true;btn.textContent='PLACING ORDER…';}
-  const name=document.getElementById('ck-name').value.trim();
-  const email=document.getElementById('ck-email').value.trim();
-  const addr=[
-    document.getElementById('ck-addr').value,
-    document.getElementById('ck-city').value,
-    document.getElementById('ck-state').value,
-    document.getElementById('ck-pin').value,
-    document.getElementById('ck-country').value,
-  ].filter(Boolean).join(', ');
-  // Build order payload
-  const subtotal=CART.reduce((s,i)=>{const p=PRODUCTS.find(x=>x.id===i.id);return s+(p?p.price*i.qty:0);},0);
-  const shipCost=_shipping==='exp'?9.99:0;
-  const payload={
-    name, email,
-    phone:   '+91'+document.getElementById('ck-phone').value.replace(/\D/g,''),
-    address: document.getElementById('ck-addr').value.trim(),
-    city:    document.getElementById('ck-city').value.trim(),
-    state:   document.getElementById('ck-state').value.trim(),
-    zip:     document.getElementById('ck-pin').value.trim(),
-    country: document.getElementById('ck-country').value.trim(),
-    shippingMethod: _shipping,
-    shippingCost:   shipCost,
-    items: CART.map(item=>{
-      const p=PRODUCTS.find(x=>x.id===item.id);
-      return p?{id:p.id,name:p.name,price:p.price,qty:item.qty}:null;
-    }).filter(Boolean),
-    subtotal,
-    total: subtotal+shipCost,
+  if(btn){btn.disabled=true;btn.textContent='PROCESSING…';}
+
+  // ── Collect form values ──────────────────────────────────────────────────────
+  const name    = document.getElementById('ck-name').value.trim();
+  const email   = document.getElementById('ck-email').value.trim();
+  const phone   = '+91'+document.getElementById('ck-phone').value.replace(/\D/g,'');
+  const address = document.getElementById('ck-addr').value.trim();
+  const city    = document.getElementById('ck-city').value.trim();
+  const state   = document.getElementById('ck-state').value.trim();
+  const zip     = document.getElementById('ck-pin').value.trim();
+  const country = document.getElementById('ck-country').value.trim();
+  const addr    = [address,city,state,zip,country].filter(Boolean).join(', ');
+
+  const subtotal = CART.reduce((s,i)=>{const p=PRODUCTS.find(x=>x.id===i.id);return s+(p?p.price*i.qty:0);},0);
+  const shipCost = _shipping==='exp'?9.99:0;
+  const total    = subtotal+shipCost;
+  const items    = CART.map(item=>{const p=PRODUCTS.find(x=>x.id===item.id);return p?{id:p.id,name:p.name,price:p.price,qty:item.qty}:null;}).filter(Boolean);
+
+  // Structured order object sent to /api/verify-payment after Razorpay succeeds
+  const structuredOrder = {
+    customer:{name,email,phone},
+    shipping:{address,city,state,zip,country,method:_shipping,cost:shipCost},
+    items,subtotal,total,
   };
+
+  // Flat payload for legacy /api/orders (demo / Razorpay-not-configured fallback)
+  const legacyPayload = {name,email,phone,address,city,state,zip,country,shippingMethod:_shipping,shippingCost:shipCost,items,subtotal,total};
+
   try{
-    const res=await fetch('/api/orders',{
+    // ── Step 1: Create Razorpay order server-side (secret stays on server) ────
+    const rzpRes = await fetch('/api/create-razorpay-order',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload),
+      body:JSON.stringify({amount:total}),
     });
+
+    // 503 = Razorpay env vars not configured → fall back to demo flow
+    if(rzpRes.status===503){
+      await _submitLegacyOrder(legacyPayload,name,email,addr,btn);
+      return;
+    }
+    if(!rzpRes.ok){
+      let msg='Payment setup failed.';
+      try{const d=await rzpRes.json();msg=d.error||msg;}catch(e){}
+      showToast(msg+' Please try again.');
+      if(btn){btn.disabled=false;btn.textContent='PLACE ORDER';}
+      return;
+    }
+
+    const rzpData = await rzpRes.json();
+
+    // ── Step 2: Razorpay script not loaded — Razorpay IS configured so this is
+    //    a technical failure, not demo mode. Never show fake order confirmation. ─
+    if(typeof Razorpay==='undefined'){
+      showToast('Payment system failed to load. Please refresh the page and try again.');
+      if(btn){btn.disabled=false;btn.textContent='PLACE ORDER';}
+      return;
+    }
+
+    // ── Step 3: Open Razorpay checkout modal ─────────────────────────────────
+    const rzp = new Razorpay({
+      key:         rzpData.key_id,
+      amount:      rzpData.amount,
+      currency:    'INR',
+      name:        'VELORA',
+      description: 'Order '+rzpData.velora_order_id,
+      order_id:    rzpData.razorpay_order_id,
+      prefill:     {name,email,contact:phone},
+      theme:       {color:'#B89B72'},
+      handler: async function(response){
+        // ── Step 4: Verify payment signature server-side ──────────────────────
+        if(btn) btn.textContent='VERIFYING PAYMENT…';
+        try{
+          const verRes = await fetch('/api/verify-payment',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({
+              razorpay_order_id:   response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature:  response.razorpay_signature,
+              order:{id:rzpData.velora_order_id,createdAt:new Date().toISOString(),...structuredOrder},
+            }),
+          });
+          const verData = await verRes.json();
+          if(verData.ok){
+            // ── Step 5: Show confirmation only after server verifies ──────────
+            showConfirmation(name,email,addr,verData.orderId);
+          }else{
+            showToast('Payment verification failed. Contact support — payment ID: '+response.razorpay_payment_id);
+            if(btn){btn.disabled=false;btn.textContent='PLACE ORDER';}
+          }
+        }catch(e){
+          showToast('Verification error — please contact support.');
+          if(btn){btn.disabled=false;btn.textContent='PLACE ORDER';}
+        }
+      },
+      modal:{
+        ondismiss:function(){
+          if(btn){btn.disabled=false;btn.textContent='PLACE ORDER';}
+        }
+      }
+    });
+    rzp.open();
+
+  }catch(e){
+    // fetch('/api/create-razorpay-order') threw before we got any response.
+    // Server was never reached — could be local dev with no wrangler running.
+    // Do NOT show order confirmation: payment was never initiated.
+    console.warn('[VELORA] Could not reach payment server:', e);
+    showToast('Could not reach the payment server. Check your connection and try again.');
+    if(btn){btn.disabled=false;btn.textContent='PLACE ORDER';}
+  }
+}
+
+// Demo/local fallback — called ONLY when server explicitly returns 503
+// (RAZORPAY_KEY_ID / RAZORPAY_KEY_SECRET env vars not set).
+// Must NEVER be called after a Razorpay order has been created successfully.
+async function _submitLegacyOrder(payload,name,email,addr,btn){
+  try{
+    const res=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     if(!res.ok){
       let msg='Please try again.';
       try{const d=await res.json();msg=d.error||msg;}catch(e){}
@@ -1269,10 +1358,10 @@ async function placeOrder(){
     const data=await res.json();
     showConfirmation(name,email,addr,data.orderId);
   }catch(e){
-    // API unreachable (demo / local without wrangler) — confirm in UI anyway
     showConfirmation(name,email,addr);
   }
 }
+
 
 function showConfirmation(name,email,addr,apiOrderId){
   const orderNum=apiOrderId||'VEL-'+Date.now().toString(36).toUpperCase().slice(-6);
@@ -1282,7 +1371,7 @@ function showConfirmation(name,email,addr,apiOrderId){
   const total=(subtotal+shipCost).toFixed(2);
   const itemRows=CART.map(item=>{
     const p=PRODUCTS.find(x=>x.id===item.id);if(!p) return '';
-    return `<div class="ck-confirm-row"><span class="ck-confirm-label">${p.name} × ${item.qty}</span><span class="ck-confirm-val">$${(p.price*item.qty).toFixed(2)}</span></div>`;
+    return `<div class="ck-confirm-row"><span class="ck-confirm-label">${p.name} × ${item.qty}</span><span class="ck-confirm-val">₹${(p.price*item.qty).toFixed(2)}</span></div>`;
   }).join('');
   // Clear cart only after confirmed
   CART=[];
@@ -1300,7 +1389,7 @@ function showConfirmation(name,email,addr,apiOrderId){
       <div class="ck-confirm-row"><span class="ck-confirm-label">Ship to</span><span class="ck-confirm-val">${addr}</span></div>
       <div class="ck-confirm-row"><span class="ck-confirm-label">Shipping</span><span class="ck-confirm-val">${shipLabel}</span></div>
       ${itemRows}
-      <div class="ck-confirm-row" style="font-weight:500"><span class="ck-confirm-label">TOTAL</span><span class="ck-confirm-val">$${total}</span></div>
+      <div class="ck-confirm-row" style="font-weight:500"><span class="ck-confirm-label">TOTAL</span><span class="ck-confirm-val">₹${total}</span></div>
     </div>
     <p class="ck-confirm-msg">A confirmation email will be sent to <strong>${email}</strong> once payment is connected. Your order ID is <strong>${orderNum}</strong>.</p>
     <a href="#" onclick="goHome(event)" class="btn-gold" style="display:inline-flex;padding:.9rem 2.5rem;font-size:.75rem">CONTINUE SHOPPING</a>
@@ -1385,8 +1474,8 @@ function renderProductPage(p){
           <span class="rcount">(${p.reviewCount.toLocaleString()} reviews)</span>
         </div>
         <div class="prod-price-row">
-          <span class="prod-price-now">$${p.price}</span>
-          <span class="prod-price-old">$${p.originalPrice}</span>
+          <span class="prod-price-now">₹${p.price}</span>
+          <span class="prod-price-old">₹${p.originalPrice}</span>
           <span class="prod-disc-badge">${p.discount}% OFF</span>
         </div>
         <p class="prod-desc-text">${p.description}</p>
@@ -1404,7 +1493,7 @@ function renderProductPage(p){
           <button class="btn-dark prod-cta" onclick="addToCart('${p.id}',true)">BUY NOW</button>
         </div>
         <div class="prod-trust">
-          <div class="prod-trust-item"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="m16 8 5 0 3 3v5h-8V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>Free shipping over $50</div>
+          <div class="prod-trust-item"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="m16 8 5 0 3 3v5h-8V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>Free shipping over ₹50</div>
           <div class="prod-trust-item"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.04"/></svg>30-day returns</div>
           <div class="prod-trust-item"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Secure checkout</div>
         </div>
@@ -1421,7 +1510,7 @@ function renderProductPage(p){
           ${p.features?`<ul class="prod-feat-list">${p.features.map(f=>`<li>${f}</li>`).join('')}</ul>`:''}
           ${p.specs?`<div style="margin-top:1.5rem"><div style="font-size:.67rem;letter-spacing:.14em;color:var(--text3);margin-bottom:.75rem">SPECIFICATIONS</div><table class="prod-specs-table">${Object.entries(p.specs).map(([k,v])=>`<tr><td>${k.replace(/_/g,' ')}</td><td>${v}</td></tr>`).join('')}</table></div>`:''}
         </div>
-        <div id="ptab-ship" class="prod-tab-panel"><p class="prod-tab-txt">Standard shipping 5–7 business days. Express 2–3 days available at checkout. Free standard shipping on orders over $50.</p></div>
+        <div id="ptab-ship" class="prod-tab-panel"><p class="prod-tab-txt">Standard shipping 5–7 business days. Express 2–3 days available at checkout. Free standard shipping on orders over ₹50.</p></div>
         <div id="ptab-ret" class="prod-tab-panel"><p class="prod-tab-txt">30-day hassle-free returns on unused items in original packaging. Contact support to initiate a return.</p></div>
       </div>
     </div>
@@ -1494,8 +1583,8 @@ function productCard(p){
       <div class="cname">${p.name}</div>
       <div class="cdesc">${p.shortDesc||p.description}</div>
       <div class="price-row">
-        <span class="pc">$${p.price}</span>
-        <span class="po">$${p.originalPrice}</span>
+        <span class="pc">₹${p.price}</span>
+        <span class="po">₹${p.originalPrice}</span>
         <span class="pd">${p.discount}% off</span>
       </div>
     </div>
@@ -1510,7 +1599,7 @@ function bsCard(p){
     <div class="bs-body">
       <div class="bs-name">${p.name}</div>
       <div class="bs-rat">${stars(p.rating)} <span style="color:var(--text3);font-size:.67rem">(${p.reviewCount.toLocaleString()})</span></div>
-      <div class="bs-pr"><span class="pc">$${p.price}</span><span class="po" style="font-size:.73rem">$${p.originalPrice}</span></div>
+      <div class="bs-pr"><span class="pc">₹${p.price}</span><span class="po" style="font-size:.73rem">₹${p.originalPrice}</span></div>
       <button class="bs-add">ADD TO CART</button>
     </div>
   </div>`;
